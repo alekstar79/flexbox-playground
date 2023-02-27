@@ -1,5 +1,5 @@
-<script lang="jsx" setup>
-import { getCurrentInstance /*, ref, withModifiers */ } from 'vue'
+<script>
+import { defineComponent /*, ref, withModifiers */ } from 'vue'
 import MainView from '@/components/MainView'
 
 // import HelloWorld from './components/HelloWorld.vue'
@@ -13,17 +13,21 @@ import MainView from '@/components/MainView'
 //** @type {(event: Event, ...args: unknown[]) => any} */
 // const onClick = withModifiers(inc, ['self'])
 
-const _self = getCurrentInstance()
-
-_self.render = () => <MainView />
-
-/* inst.render = () => (
-  <>
-    <img { ...{ src: logo } } alt="Vue logo" />
-    <button onClick={onClick}>{count.value}</button>
-    <HelloWorld msg="Welcome to Vue.js App" />
-  </>
-) */
+export default defineComponent({
+  setup() {
+    return () => (<MainView />)
+  }
+  /* setup()
+  {
+    return () => (
+      <>
+        <img { ...{ src: logo } } alt="Vue logo" />
+        <button onClick={onClick}>{count.value}</button>
+        <HelloWorld msg="Welcome to Vue.js App" />
+      </>
+    )
+  } */
+})
 </script>
 
 <style lang="scss">

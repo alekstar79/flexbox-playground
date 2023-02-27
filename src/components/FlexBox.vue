@@ -1,16 +1,19 @@
-<script lang="jsx" setup>
-import { defineProps, getCurrentInstance } from 'vue'
+<script>
+import { defineComponent } from 'vue'
 
-const _self = getCurrentInstance()
-const props = defineProps({
-  classList: Array
+export default defineComponent({
+  props: {
+    classList: Array
+  },
+  setup(props)
+  {
+    return (/* { $props: prop } */) => (
+      <div className={`boxWrapper d-flex ${props.classList.join(' ')}`}>
+        {Array.from({ length: 10 }).map((item, key) =>
+          <div className="boxItem" key={key}>{ key + 1 }</div>
+        )}
+      </div>
+    )
+  }
 })
-
-_self.render = () => (
-  <div className={`boxWrapper d-flex ${props.classList.join(' ')}`}>
-    {Array.from({ length: 10 }).map((item, key) =>
-      <div className="boxItem" key={key}>{ key + 1 }</div>
-    )}
-  </div>
-)
 </script>

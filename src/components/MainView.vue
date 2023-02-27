@@ -1,5 +1,5 @@
-<script lang="jsx" setup>
-import { getCurrentInstance, reactive } from 'vue'
+<script>
+import { defineComponent, reactive } from 'vue'
 
 import ItemSelector from '@/components/ItemSelector'
 import RadioBtn from '@/components/RadioBtn'
@@ -88,29 +88,6 @@ const setItemVal = (index, attr, val) => {
   state.itemVal = newVal
 }
 
-const setClass = () => {
-  const { containerVal } = state
-
-  const convertList = {
-    dirVal: 'dirList',
-    wrapVal: 'wrapList',
-    jcVal: 'jcList',
-    aiVal: 'aiList',
-    acVal: 'acList',
-  }
-
-  return Object.keys(containerVal)
-    .reduce((pre, el) => {
-      if (!!containerVal[el] && convertList[el]) {
-        const attrList = state[convertList[el]]
-
-        return pre.concat(attrList[containerVal[el]].class)
-      } else {
-        return pre
-      }
-    }, [])
-}
-
 const initCon = () => {
   const newVal = { ...state.containerVal }
 
@@ -128,7 +105,7 @@ const initItems = () => {
 const radioContent = (title, btnName, list, valName) => (
   <div className="mb-2 row align-items-center">
     <span className="col-lg-2 mb-lg-0 mb-1 font-weight-bold">
-      {title}
+      { title }
     </span>
 
     <div className="col-lg-10">
@@ -142,56 +119,83 @@ const radioContent = (title, btnName, list, valName) => (
   </div>
 )
 
-const _self = getCurrentInstance()
+export default defineComponent({
+  computed: {
+    classList() {
+      const { containerVal } = state
 
-_self.render = () => (
-  <div className="container pt-2 pb-5">
-    <h1 className="text-center mb-4">Flexbox Playground</h1>
+      const convertList = {
+        dirVal: 'dirList',
+        wrapVal: 'wrapList',
+        jcVal: 'jcList',
+        aiVal: 'aiList',
+        acVal: 'acList',
+      }
 
-    <h3 className="my-4">
-      <span role="img">🧀</span> flex container
-      <button className="btn btn-sm btn-outline-danger ml-4" onClick={initCon}>
-        reset
-      </button>
-    </h3>
+      return Object.keys(containerVal)
+        .reduce((pre, el) => {
+          if (!!containerVal[el] && convertList[el]) {
+            const attrList = state[convertList[el]]
 
-    {radioContent('flex-direction', 'dirBtn', state.dirList, 'dirVal')}
-    {radioContent('flex-wrap', 'wrapBtn', state.wrapList, 'wrapVal')}
-    {radioContent('justify-content', 'jcBtn', state.jcList, 'jcVal')}
-    {radioContent('align-items', 'aiBtn', state.aiList, 'aiVal')}
-    {radioContent('align-content', 'acBtn', state.acList, 'acVal')}
-
-    {!!state.containerVal.acVal && !state.containerVal.wrapVal &&
-      <div className="text-danger">* ALIGN-CONTENT need to use with WRAP!!</div>
+            return pre.concat(attrList[containerVal[el]].class)
+          } else {
+            return pre
+          }
+        }, [])
     }
+  },
+  setup()
+  {
+    return (context) => (
+      <div className="container pt-2 pb-5">
+        <h1 className="text-center mb-4">Flexbox Playground</h1>
 
-    <FlexBox classList={setClass()} />
+        <h3 className="my-4">
+          <span role="img">🧀</span> flex container
+          <button className="btn btn-sm btn-outline-danger ml-4" onClick={initCon}>
+            reset
+          </button>
+        </h3>
 
-    <h3 className="my-4">
-      <span role="img">🧀</span> flex items
-      <button className="btn btn-sm btn-outline-danger ml-4" onClick={initItems}>
-        reset
-      </button>
-    </h3>
+        {radioContent('flex-direction', 'dirBtn', state.dirList, 'dirVal')}
+        {radioContent('flex-wrap', 'wrapBtn', state.wrapList, 'wrapVal')}
+        {radioContent('justify-content', 'jcBtn', state.jcList, 'jcVal')}
+        {radioContent('align-items', 'aiBtn', state.aiList, 'aiVal')}
+        {radioContent('align-content', 'acBtn', state.acList, 'acVal')}
 
-    <div className="selectorWrapper">
-      {Array.apply(null, Array(5)).map((item, key) =>
-        <ItemSelector
-          setItemVal={(attr, val) => setItemVal(key, attr, val)}
-          params={state.itemVal[key]}
+        {!!state.containerVal.acVal && !state.containerVal.wrapVal &&
+          <div className="text-danger">* ALIGN-CONTENT need to use with WRAP!!</div>
+        }
+
+        <FlexBox classList={context.classList} />
+
+        <h3 className="my-4">
+          <span role="img">🧀</span> flex items
+          <button className="btn btn-sm btn-outline-danger ml-4" onClick={initItems}>
+            reset
+          </button>
+        </h3>
+
+        <div className="selectorWrapper">
+          {Array.apply(null, Array(5)).map((item, key) =>
+            <ItemSelector
+              setItemVal={(attr, val) => setItemVal(key, attr, val)}
+              params={state.itemVal[key]}
+              asList={state.asList}
+              fbList={state.fbList}
+              number={key + 1}
+              key={key}
+            />
+          )}
+        </div>
+
+        <FlexItem
+          itemVal={state.itemVal}
           asList={state.asList}
           fbList={state.fbList}
-          number={key + 1}
-          key={key}
         />
-      )}
-    </div>
-
-    <FlexItem
-      itemVal={state.itemVal}
-      asList={state.asList}
-      fbList={state.fbList}
-    />
-  </div>
-)
+      </div>
+    )
+  }
+})
 </script>
